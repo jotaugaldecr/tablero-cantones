@@ -1,0 +1,87 @@
+---
+title: Datos de Cantones de Costa Rica"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+
+```{r paquetes}
+# Carga de paquetes
+
+library(dplyr)
+library(sf)
+library(leaflet)
+library(DT)
+library(ggplot2)
+library(plotly)
+```
+
+
+```{r lectura-datos}
+cantones <-
+  st_read(dsn = "C:/Users/gf0604-2/Documents/tablero-cantones/cantones_simplificados.geojson.txt") %>%
+  st_transform(4326)
+```
+
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Mapa A
+
+```{r}
+leaflet() %>%
+  addTiles(group = "OpenStreetMap") %>%
+  addPolygons(data = cantones, weight = 1.0, group = "cantones") %>%
+  addLayersControl(baseGroups = c("OpenStreetMap"),
+                   overlayGroups = c("Cantones"))
+
+
+
+```
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Tabla B
+
+
+```{r carga-datos-tabla}
+
+```
+
+
+
+```{r tabla, message=FALSE, echo=FALSE,warning=FALSE}
+cantones %>%
+  dplyr::select(provincia, canton, area) %>%
+  datatable(
+    options = list (
+      pageLength = 50,
+      language = list(url = '//cdn.datatables.net/plug-ins/1.10.11/i18n/Spanish.json')
+    ))
+
+
+```
+
+### Grafico C
+
+```{r grafico}
+grafico <-
+cantones %>%
+  ggplot(aes(x = canton, y = area)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  ggtitle("Datos de cantones") + 
+  xlab("Cantón") +
+  ylab("Área") +
+  theme_get()
+ggplotly(grafico) %>% config(locale = 'es')
+```
+
