@@ -25,7 +25,7 @@ library(plotly)
 
 ```{r lectura-datos}
 cantones <-
-  st_read(dsn = "C:/Users/gf0604-2/Documents/tablero-cantones/cantones_simplificados.geojson.txt") %>%
+  st_read(dsn = "C:/Users/gf0604-2/Documents/tablero-cantones/cantones_simplificados.geojson.txt", quiet = TRUE) %>%
   st_transform(4326)
 ```
 
@@ -75,7 +75,8 @@ cantones %>%
 ```{r grafico}
 grafico <-
 cantones %>%
-  ggplot(aes(x = canton, y = area)) +
+  slice_max(area, n = 10) %>%
+  ggplot(aes(x = reorder(canton, area), y = area)) +
   geom_bar(stat = "identity") +
   coord_flip() +
   ggtitle("Datos de cantones") + 
