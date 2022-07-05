@@ -52,15 +52,12 @@ Column {data-width=500}
 ### Tabla B
 
 
-```{r carga-datos-tabla}
-
-```
-
 
 
 ```{r tabla, message=FALSE, echo=FALSE,warning=FALSE}
 cantones %>%
   dplyr::select(provincia, canton, area) %>%
+  st_drop_geometry() %>%
   datatable(
     options = list (
       pageLength = 50,
